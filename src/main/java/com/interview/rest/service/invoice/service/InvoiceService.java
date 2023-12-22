@@ -17,8 +17,8 @@ import java.util.stream.Collectors;
 @Service
 public class InvoiceService {
 
-    private InvoiceRepository invoiceRepository;
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private final InvoiceRepository invoiceRepository;
+    private final ObjectMapper objectMapper = new ObjectMapper();
 
     @Autowired
     public InvoiceService(InvoiceRepository invoiceRepository) {
@@ -32,7 +32,7 @@ public class InvoiceService {
         List<InvoiceEntity> invoices = invoiceRepository.getByCustomerId(customerId);
 
         return invoices.stream()
-                .collect(Collectors.toMap(invoice->invoice.getInvoiceId(),invoice-> {
+                .collect(Collectors.toMap(InvoiceEntity::getInvoiceId, invoice-> {
                     try {
                         return objectMapper.readValue(invoice.getInvoiceData(), InvoiceData.class).getTenderDetails().getType();
                     } catch (JsonProcessingException e) {
